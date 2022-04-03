@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class NewOrderMain {
@@ -14,26 +15,29 @@ public class NewOrderMain {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     
       var producer = new KafkaProducer<String, String>(properties());
-      var value = "111111,22222, 1234567";
-      var email = "Thank you for your Order! We are processing your Order!";
+      for (int i = 0; i < 100; i++) {
+          var key = UUID.randomUUID().toString(); //Gerando um Universal Id aleatório
+          var value = key + ", 22222, 1234567";
+          var email = "Thank you for your Order! We are processing your Order!";
 
-      var producerRecord = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value);
-      var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", email, email);
+          var producerRecord = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", key, value);
+          var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", key, email);
 
-      Callback callback = (data, ex) -> {
-          if (ex != null) {
-              ex.printStackTrace();
-              return;
-          }
-          System.out.println("Sucesso enviando " + data.topic() +
-                  " ::partition " + data.partition() +
-                  "/ offset " + data.offset() +
-                  " /timestamp " + data.timestamp());
-      };
+          Callback callback = (data, ex) -> {
+              if (ex != null) {
+                  ex.printStackTrace();
+                  return;
+              }
+              System.out.println("Sucesso enviando " + data.topic() +
+                      " ::partition " + data.partition() +
+                      "/ offset " + data.offset() +
+                      " /timestamp " + data.timestamp());
+          };
 
-      producer.send(producerRecord, callback).get(); // Precisamos de um callback pra retornar o sucesso ou falha
+          producer.send(producerRecord, callback).get(); // Precisamos de um callback pra retornar o sucesso ou falha
 
-      producer.send(emailRecord, callback).get();
+          producer.send(emailRecord, callback).get();
+      }
   }
 
   private static Properties properties(){
