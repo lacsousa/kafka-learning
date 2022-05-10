@@ -15,18 +15,19 @@ public class NewOrderMainV1 {
 
     var value = "1, 1, 987234";
 
-    var record = new ProducerRecord<String, String>("ECOMMERCE_NEW_ORDER", value, value);
+    var registro = new ProducerRecord<String, String>("ECOMMERCE_NEW_ORDER", value, value);
 
     // producer.send(record);
     // producer.send(record).get(); 
-    producer.send(record, (data, ex ) -> {
+    producer.send(registro, (data, ex ) -> {
         if (ex!= null) { 
           ex.printStackTrace();
           return;
         }
+
         System.out.println("Sucesso enviando....> " + data.topic() + " :::partition " + data.partition() +
               "/  offset" + data.offset() + "/ timestamp " + data.timestamp());
-    });
+    }).get();
     
   }
 
