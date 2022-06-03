@@ -8,8 +8,8 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
-ecommerce/.idea/**
-ecommerce/target/**
+ecommerce/.idea/
+ecommerce/target/
 
 # AWS User-specific
 .idea/**/aws.xml

@@ -14,27 +14,29 @@ public class FraudeDetectorServiceV1 {
 
     var consumer = new KafkaConsumer<String, String>(properties());
     consumer.subscribe(Collections.singletonList("ECOMMERCE_NEW_ORDER"));
-    var records = consumer.poll(Duration.ofMillis(100));
-    if (records.isEmpty()) {
-      System.out.println("Não foram encontrados registros...");
-      return;
-    }
 
-    for (var record : records) {
-      System.out.println("---------------------------------------------------------");
-      System.out.println("Processando nova ordem, verificando possíveis fraudes ...");
-      System.out.println(record.key());
-      System.out.println(record.value());
-      System.out.println(record.partition());
-      System.out.println(record.offset());
-      try {
-        Thread.sleep(3000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+    // To continue monitoring, for now, we will leave it with a while(true)
+    while (true) {
+      var records = consumer.poll(Duration.ofMillis(100));
+      if (!records.isEmpty()) {
+        System.out.println("Encontrei  " + records.count() + " registros...");
+
+        for (var record : records) {
+          System.out.println("---------------------------------------------------------");
+          System.out.println("Processando nova ordem, verificando possíveis fraudes ...");
+          System.out.println(record.key());
+          System.out.println(record.value());
+          System.out.println(record.partition());
+          System.out.println(record.offset());
+          try {
+            Thread.sleep(3000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          System.out.println("Ordem processada ...");
+        }
       }
-      System.out.println("Ordem processada ...");
     }
-
   }
 
   private static Properties properties() {
@@ -43,7 +45,7 @@ public class FraudeDetectorServiceV1 {
     properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-    //precisa passar um GroupId
+    // precisa passar um GroupId
     properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudeDetectorServiceV1.class.getSimpleName());
     return properties;
   }
