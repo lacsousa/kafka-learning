@@ -15,7 +15,8 @@ public class NewOrderMainV1 {
 
     var value = "4, 3, 987777234";
 
-    var registro = new ProducerRecord<String, String>("ECOMMERCE_NEW_ORDER", value, value);
+    var registro = new ProducerRecord<String, String>(
+            "ECOMMERCE_NEW_ORDER", value, value);
 
     // producer.send(record);
     // producer.send(record).get(); 
@@ -25,8 +26,10 @@ public class NewOrderMainV1 {
           return;
         }
 
-        System.out.println("Sucesso enviando....> " + data.topic() + " :::partition " + data.partition() +
-              "/  offset" + data.offset() + "/ timestamp " + data.timestamp());
+        System.out.println("Sucesso enviando....> " + data.topic() +
+                " :::partition " + data.partition() +
+                "/  offset" + data.offset() +
+                "/ timestamp " + data.timestamp());
     }).get();
     
   }
