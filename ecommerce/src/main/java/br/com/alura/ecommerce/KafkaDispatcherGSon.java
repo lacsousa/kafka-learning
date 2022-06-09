@@ -10,11 +10,11 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-class KafkaDispatcher<T> implements Closeable {
+class KafkaDispatcherGSon<T> implements Closeable {
 
     private final KafkaProducer<String, T> producer;
 
-    KafkaDispatcher() {
+    KafkaDispatcherGSon() {
         this.producer = new KafkaProducer<>(properties());
     }
 
@@ -22,7 +22,7 @@ class KafkaDispatcher<T> implements Closeable {
         var properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName());
         return properties;
     }
 
