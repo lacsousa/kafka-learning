@@ -1,21 +1,27 @@
 package br.com.alura.ecommerce;
 
+import com.sun.jdi.ObjectReference;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-public class FraudDetectorService {
+import java.util.HashMap;
+import java.util.Map;
+
+public class FraudDetectorServiceV2 {
 
     public static void main(String[] args) {
 
-        var fraudDetectorService = new FraudDetectorService();
-        try(var kafkaService = new KafkaService(
-                FraudDetectorService.class.getSimpleName(),
+        var fraudDetectorServiceV2 = new FraudDetectorServiceV2();
+        try(var kafkaService = new KafkaService<>(
+                FraudDetectorServiceV2.class.getSimpleName(),
                 "ECOMMERCE_NEW_ORDER",
-                fraudDetectorService::parse)) {
+                fraudDetectorServiceV2::parse,
+                Order.class,
+                Map.of())) {
             kafkaService.run();
         }
     }
 
-    private void parse(ConsumerRecord<String, String> record) {
+    private void parse(ConsumerRecord<String, Order> record) {
 
         System.out.println("---------------------------------------------");
         System.out.println("Processing new order, checking for fraud");
